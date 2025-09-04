@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .failed{
+            color:red
+        }
+    </style>
+
 </head>
 <body>
 
 <h3>My Custom login Page </h3>
 
 <!-- Check for login error -->
-<div th:if="${param.error}">
+<div th:if="${param.error}" class="failed">
     <i>
         Sorry! you entered invalid username/password
     </i>
