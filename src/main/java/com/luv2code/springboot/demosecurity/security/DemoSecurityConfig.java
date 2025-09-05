@@ -1,5 +1,7 @@
 package com.luv2code.springboot.demosecurity.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class DemoSecurityConfig {
+    private static final Logger log = LoggerFactory.getLogger(DemoSecurityConfig.class);
+
     @Bean
     public InMemoryUserDetailsManager userDetailsManager(){
         UserDetails john = User.builder()
@@ -37,12 +41,17 @@ public class DemoSecurityConfig {
 
         http.authorizeHttpRequests(configurer ->
                 configurer
+                        .requestMatchers("/").hasRole("EMPLOYEE")
+                        .requestMatchers("/leaders/**").hasRole("MANAGER")
+                        .requestMatchers("/systems/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
         )
                 .formLogin(form->form
                         .loginPage("/showingLoginPage")
                         .loginProcessingUrl("/authenticateTheUser")
                         .permitAll()
+                )
+                .logout(logout->logout.permitAll()
                 );
         return http.build();
     }
